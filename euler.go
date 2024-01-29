@@ -33,8 +33,38 @@ func copyIntArray(arr []int) []int {
 }
 
 func PrimesInRange(a, b int) []int {
-	arr := make([]int, b-1+1)
+	arr := make([]int, b-a+1)
+	if a == 1 {
+		arr[0] = 1
+	}
+	if a == 0 {
+		arr[0], arr[1] = 1, 1
+	}
+	m := IntSqrt(b)
 	for _, p := range primes {
+		if p > m {
+			break
+		}
+		start := 0
+		if p >= a && p <= b {
+			start = p+p
+		} else if a%p == 0 {
+			start = a
+		} else {
+			start = a + p - a%p
+		}
+		for i := start; i <= b; i += p {
+			arr[i-a] = 1
+		}
+	}
+	ret := []int{}
+	for i, n := range arr {
+		if n == 0 {
+			ret = append(ret, i+a)
+		}
+	}
+	return ret
+}
 
 
 // IntSqrt returns the integer square root of n
@@ -100,8 +130,6 @@ func init() {
 
 
 func main() {
-	log.Println(GCD(155, 30))
-	log.Println(UniqFactors(2*2*2*2*3*3*5))
-	log.Println(Phi(77))
-	log.Println(copyIntArray([]int{1,2,3,4}))
+	log.Println(len(PrimesInRange(0,200)))
+	log.Println(len(PrimesInRange(100, 200)))
 }
